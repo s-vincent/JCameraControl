@@ -20,6 +20,7 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.paint.*;
 import javafx.geometry.*;
+import javafx.beans.value.*;
 import javafx.stage.*;
 import javafx.embed.swing.*;
 
@@ -55,12 +56,13 @@ public class Main extends Application
 
     /**
      * Adds a webcam UI element into layout.
-     * 
+     *
      * @param webcam the webcam to add.
      */
     private void addWebcam(Webcam webcam)
     {
         final SwingNode swingNode = new SwingNode();
+        final TitledPane pane = new TitledPane(webcam.getName(), swingNode);
 
         System.out.println("Adds new webcam: " + webcam.getName());
 
@@ -80,13 +82,44 @@ public class Main extends Application
             }
         });
 
-        // run in JavaFX thread
+        pane.expandedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(
+                    ObservableValue<? extends Boolean> obs,
+                    Boolean oldValue, Boolean newValue)
+            {
+                // run the start/stop in Swing thread just to be sure
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        final WebcamPanel webcamPanel =
+                            (WebcamPanel)swingNode.getContent();
+
+                        // stop the camera is titledpane is
+                        // closed to avoid wasting CPU
+                        if(!newValue)
+                        {
+                            System.out.println("Pause webcam: " +
+                                    webcam.getName());
+                            webcamPanel.stop();
+                        }
+                        else
+                        {
+                            System.out.println("Resume webcam: " +
+                                    webcam.getName());
+                            webcamPanel.start();
+                        }
+                    }
+                });
+            }
+        });
+
+        // adds the JavaFX UI in JavaFX thread
         Platform.runLater(new Runnable() {
             @Override
             public void run()
             {
-                TitledPane pane = new TitledPane(webcam.getName(), swingNode);
-
                 panes.add(pane);
                 root.getChildren().add(pane);
             }
@@ -95,7 +128,7 @@ public class Main extends Application
 
     /**
      * Removes a webcam UI element from layout.
-     * 
+     *
      * @param webcam the webcam to remove.
      */
     private void removeWebcam(Webcam webcam)
@@ -110,7 +143,6 @@ public class Main extends Application
 
             if(panel.getWebcam().getName().equals(webcam.getName()))
             {
-                System.out.println("Remove children UI!");
                 panel.stop();
                 panel = null;
 
@@ -143,7 +175,7 @@ public class Main extends Application
         {
             addWebcam(webcam);
         }
-        
+
         // register for add/remove webcams callback
         Webcam.addDiscoveryListener(this);
 
@@ -156,14 +188,20 @@ public class Main extends Application
             @Override
             public void handle(WindowEvent event)
             {
-                for(TitledPane pane : panes)
-                {
-                    SwingNode swingNode = (SwingNode)pane.getContent();
-                    WebcamPanel panel = (WebcamPanel)swingNode.getContent();
-
-                    panel.stop();
-                }
-                panes.clear();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        for(TitledPane pane : panes)
+                        {
+                            SwingNode swingNode = (SwingNode)pane.getContent();
+                            WebcamPanel webcamPanel =
+                                (WebcamPanel)swingNode.getContent();
+                            webcamPanel.stop();
+                        }
+                        panes.clear();
+                    }
+                });
             }
         });
 
