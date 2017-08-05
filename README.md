@@ -47,7 +47,7 @@ the project directory as "Root Directory".
 
 ## License
 
-The code is under BSD-3 license.
+All codes are under BSD-3 license.
 
 ## Links
 
