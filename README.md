@@ -10,7 +10,7 @@ wrap them in JavaFX with javafx.embed.swing.SwingNode class.
 
 ## Pre-requisites
 
-You need JDK 8 (either from Oracle or OpenJDK), JavaFX/OpenJFX and maven.
+You need JDK 11 (either from Oracle or OpenJDK), JavaFX/OpenJFX and maven.
 
 On GNU/Linux Debian like distributions you can use:
 
@@ -32,7 +32,8 @@ Once build, the compiled jar as well as dependencies jars are in target/.
 
 To run from project directory:
 
-`java -jar target/JCameraControl-1.0-SNAPSHOT.jar`
+`java -p target/lib --add-modules javafx.controls,javafx.swing 
+-jar target/JCameraControl-1.0-SNAPSHOT.jar`
 
 You can also run it via maven:
 
