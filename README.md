@@ -10,7 +10,7 @@ wrap them in JavaFX with javafx.embed.swing.SwingNode class.
 
 ## Pre-requisites
 
-You need JDK 11 (either from Oracle or OpenJDK), JavaFX/OpenJFX and maven.
+You need JDK 17 (either from Oracle or OpenJDK), JavaFX/OpenJFX and maven.
 
 On GNU/Linux Debian like distributions you can use:
 

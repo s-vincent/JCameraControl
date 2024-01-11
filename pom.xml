@@ -94,12 +94,12 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>11</version>
+			<version>17</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-swing</artifactId>
-			<version>11</version>
+			<version>17</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.sarxos</groupId>
